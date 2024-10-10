@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.juiceybeans.toolery.Toolery;
+import com.juiceybeans.toolery.api.item.armor.VanillaArmorLogic;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
@@ -45,9 +46,13 @@ public class PostMaterialEventStuffGuh {
                     if (material.hasProperty(PropertyKey.TOOL)) {
                         var property = material.getProperty(PropertyKey.TOOL);
                         var tier = material.getToolTier();
+                        String wuh = tier.material.getName() + "_" + armorType.getKey().toString().toLowerCase();
+
                         ARMOR_ITEMS.put(material, armorType.getKey(), (ItemProviderEntry<ArmorComponentItem>) (ItemProviderEntry<?>)
-                                registrate.item(armorType.getKey().toString().toLowerCase().formatted(tier.material.getName()),
-                                                p -> new ArmorComponentItem(GTArmorMaterials.ARMOR, armorType.getKey(), p).asItem())
+                                registrate
+                                        .item(wuh,
+                                                p -> new ArmorComponentItem(GTArmorMaterials.ARMOR, armorType.getKey(), p)
+                                                        .setArmorLogic(new VanillaArmorLogic(armorType.getKey(), wuh)))
                                         .properties(p -> p.craftRemainder(Items.AIR))
                                         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                         .model(NonNullBiConsumer.noop())
