@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistr
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.juiceybeans.toolery.Toolery;
 import com.juiceybeans.toolery.api.item.armor.VanillaArmorLogic;
@@ -18,6 +19,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import net.minecraft.Util;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Items;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -38,26 +40,36 @@ public class PostMaterialEventStuffGuh {
             GTCEuAPI.materialManager.getRegisteredMaterials().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL))
                     .toList(), armorMap.keySet().stream().toList());
 
+    private static final Material[] excludedArmorMaterials = new Material[] {
+            GTMaterials.Iron, GTMaterials.Gold, GTMaterials.Diamond, //todo GTMaterials.Netherite,
+            //todo config for joke materials
+            GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
+            GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole,
+            GTMaterials.SiliconeRubber, GTMaterials.StyreneButadieneRubber
+    };
+
     public static void generateArmors() {
         for (Map.Entry<ArmorItem.Type, Integer> armorType : armorMap.entrySet()) {
             for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
                 GTRegistrate registrate = Toolery.TOOLERY_REGISTRATE;
                 for (Material material : registry.getAllMaterials()) {
-                    if (material.hasProperty(PropertyKey.TOOL)) {
-                        var property = material.getProperty(PropertyKey.TOOL);
-                        var tier = material.getToolTier();
-                        String wuh = tier.material.getName() + "_" + armorType.getKey().toString().toLowerCase();
+                    if (!ArrayUtils.contains(excludedArmorMaterials, material)) {
+                        if (material.hasProperty(PropertyKey.TOOL)) {
+                            var property = material.getProperty(PropertyKey.TOOL);
+                            var tier = material.getToolTier();
+                            String wuh = tier.material.getName() + "_" + armorType.getKey().toString().toLowerCase();
 
-                        ARMOR_ITEMS.put(material, armorType.getKey(), (ItemProviderEntry<ArmorComponentItem>) (ItemProviderEntry<?>)
-                                registrate
-                                        .item(wuh,
-                                                p -> new ArmorComponentItem(GTArmorMaterials.ARMOR, armorType.getKey(), p)
-                                                        .setArmorLogic(new VanillaArmorLogic(armorType.getKey(), wuh)))
-                                        .properties(p -> p.craftRemainder(Items.AIR))
-                                        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                                        .model(NonNullBiConsumer.noop())
-                                        .color(() -> IGTTool::tintColor)
-                                        .register());
+                            ARMOR_ITEMS.put(material, armorType.getKey(), (ItemProviderEntry<ArmorComponentItem>) (ItemProviderEntry<?>)
+                                    registrate
+                                            .item(wuh,
+                                                    p -> new ArmorComponentItem(GTArmorMaterials.ARMOR, armorType.getKey(), p)
+                                                            .setArmorLogic(new VanillaArmorLogic(armorType.getKey(), wuh, material.getMaterialARGB())))
+                                            .properties(p -> p.craftRemainder(Items.AIR))
+                                            .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                                            .model(NonNullBiConsumer.noop())
+                                            .color(() -> IGTTool::tintColor)
+                                            .register());
+                        }
                     }
                 }
             }
