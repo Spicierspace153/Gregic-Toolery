@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.juiceybeans.toolery.common.data.PostMaterialEventStuffGuh;
 import com.juiceybeans.toolery.common.data.TooleryItems;
 import com.juiceybeans.toolery.common.data.TooleryTabs;
 import net.minecraft.client.Minecraft;
@@ -75,6 +76,7 @@ public class Toolery {
 
     // This is optional, though.
     private void modifyMaterials(PostMaterialEvent event) {
+        PostMaterialEventStuffGuh.init();
         //CustomMaterials.modify();
     }
 

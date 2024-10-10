@@ -1,10 +1,14 @@
 package com.juiceybeans.toolery.api.item.armor;
 
+import com.google.common.collect.Multimap;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.juiceybeans.toolery.Toolery;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -35,5 +39,20 @@ public class VanillaArmorLogic implements IArmorLogic {
         return slot != EquipmentSlot.LEGS ?
                 Toolery.id(String.format("textures/armor/%s_1.png", armorTexture)) :
                 Toolery.id(String.format("textures/armor/%s_2.png", armorTexture));
+    }
+
+    @Override
+    public void addToolComponents(ArmorComponentItem item) {
+        IArmorLogic.super.addToolComponents(item);
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        return IArmorLogic.super.getAttributeModifiers(slot, stack);
+    }
+
+    @Override
+    public int getArmorLayerColor(ItemStack itemStack, int layerIndex) {
+        return IArmorLogic.super.getArmorLayerColor(itemStack, layerIndex);
     }
 }
